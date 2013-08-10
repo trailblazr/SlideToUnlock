@@ -24,7 +24,7 @@
 #define kTextStartX 113
 #define kTextStartY 35
 #define kTextStartWidth 378
-#define kTextStartHeight 44
+#define kTextStartHeight 60
 #define kTextScale 2.0
 
 @interface ANSlider (Private)
@@ -131,19 +131,15 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	CGPoint location = [[touches anyObject] locationInView:self];
 	isDragging = NO;
-	if (location.x >= sliderCoordinates.x - (kButtonOffsetX / 2)) {
-		if (location.x <= sliderCoordinates.x - (kButtonOffsetY / 2) + ([sliderImage size].width / 2)) {
-			isDragging = YES;
-			startTouch = location.x;
-			startSliderX = sliderCoordinates.x;
-			if (isSlidingBack) {
-				isSlidingBack = NO;
-				[easeOut release];
-				easeOut = nil;
-			}
-			[self stopAnimating:self];
-		}
-	}
+    isDragging = YES;
+    startTouch = location.x;
+    startSliderX = sliderCoordinates.x;
+    if (isSlidingBack) {
+        isSlidingBack = NO;
+        [easeOut release];
+        easeOut = nil;
+    }
+    [self stopAnimating:self];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
