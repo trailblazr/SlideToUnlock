@@ -1,12 +1,12 @@
 Slide To Unlock
 ===============
 
-The ```ANSlider``` class provides an interface quite similar to that of Apple's slide-to-unlock screen.  It allows for custom text, and will soon support an easy-to-use delegate interface.
+The ```ANSlider``` class provides an interface quite similar to that of Apple's slide-to-unlock screen and was initiated by Ryan (NULL) and Alex Nichol. It allows for custom text, and supports an easy-to-use delegate interface.
 
-Example Screenshots
+Example Screenshot
 ===================
 
-![Example Slide To Unlock](https://github.com/unixpickle/SlideToUnlock/raw/master/Example.png)
+![Example Slide To Unlock](https://github.com/trailblazr/SlideToUnlock/raw/master/Example.png)
 
 License
 =======
