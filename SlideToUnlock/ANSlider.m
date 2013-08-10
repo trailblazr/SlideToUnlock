@@ -41,6 +41,8 @@
 
 @implementation ANSlider
 
+@synthesize delegate;
+
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
         // Initialization code
@@ -150,6 +152,9 @@
 		CGFloat offsetX = location.x - startTouch;
 		[self setSliderX:(offsetX + startSliderX)];
 		[self setNeedsDisplay];
+        if( delegate && [delegate respondsToSelector:@selector(sliderMoved:)] ) {
+            [delegate sliderMoved:self];
+        }
 	}
 }
 
@@ -157,9 +162,22 @@
 	if (isDragging) {
 		[self startAnimating:self];
 		isDragging = NO;
-		isSlidingBack = YES;
-		[easeOut release];
-		easeOut = [[EaseOutSmoothAnimation alloc] initWithDuration:0.25 destinationValue:(sliderCoordinates.x - kButtonStartX)];
+        CGFloat maxX = self.frame.size.width - 23;
+        CGFloat coordMaxX = maxX - ([sliderImage size].width / 2 - (kButtonOffsetX / 2));
+        if( sliderCoordinates.x >= coordMaxX-2.0f ) {
+            isSlidingBack = NO;
+            if( delegate && [delegate respondsToSelector:@selector(sliderUnlocked:)] ) {
+                [delegate sliderUnlocked:self];
+            }
+        }
+        else {
+            if( delegate && [delegate respondsToSelector:@selector(sliderStillLocked:)] ) {
+                [delegate sliderStillLocked:self];
+            }
+            isSlidingBack = YES;
+            [easeOut release];
+            easeOut = [[EaseOutSmoothAnimation alloc] initWithDuration:0.25 destinationValue:(sliderCoordinates.x - kButtonStartX)];
+        }
 	}
 }
 
@@ -211,6 +229,13 @@
 - (void)setLastSlideDate:(NSDate *)newDate {
 	[lastSlideDate autorelease];
 	lastSlideDate = [newDate retain];
+}
+
+- (void)reset {
+    [self setSliderX:0.0f];
+    if( delegate && [delegate respondsToSelector:@selector(sliderStillLocked:)] ) {
+        [delegate sliderStillLocked:self];
+    }
 }
 
 - (void)setSliderX:(CGFloat)coordX {

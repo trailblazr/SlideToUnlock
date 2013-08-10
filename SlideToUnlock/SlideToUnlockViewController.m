@@ -10,35 +10,75 @@
 
 @implementation SlideToUnlockViewController
 
-- (void)didReceiveMemoryWarning
+@synthesize statusLabel;
+@synthesize slider;
+@synthesize buttonReset;
+@synthesize sliderOriginalCenter;
+
+- (void) dealloc;
 {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
+    slider.delegate = nil;
+    self.slider = nil;
+    self.statusLabel = nil;
+    self.buttonReset = nil;
+    [super dealloc];
 }
 
-#pragma mark - View lifecycle
+- (void)didReceiveMemoryWarning;
+{
+    [super didReceiveMemoryWarning];
+}
 
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad {
+#pragma mark - view handling
+
+- (void)viewDidLoad;
+{
     [super viewDidLoad];
-	ANSlider * slider = [[ANSlider alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 95, 320, 95)];
+	self.slider = [[[ANSlider alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 95, 320, 95)] autorelease];
+    slider.delegate = self;
 	[slider startAnimating:self];
 	[self.view addSubview:[slider autorelease]];
+    self.sliderOriginalCenter = slider.center;
+    buttonReset.hidden = YES;
 }
 
-- (void)viewDidUnload
+- (NSUInteger)supportedInterfaceOrientations
 {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
+    return UIInterfaceOrientationMaskPortrait;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+#pragma mark - user actions
+
+- (IBAction) actionReset:(id)sender;
 {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    [slider reset];
+    [UIView animateWithDuration:0.5 animations:^{
+        slider.center = sliderOriginalCenter;
+    } completion:^(BOOL finished) {
+        buttonReset.hidden = YES;
+    }];
+}
+
+#pragma mark - ANSliderDelegate
+
+- (void) sliderUnlocked:(ANSlider*)sliderView;
+{
+    self.statusLabel.text = @"UNLOCKED.";
+    [UIView animateWithDuration:0.5 animations:^{
+        sliderView.center = CGPointMake(sliderView.center.x, sliderView.center.y+sliderView.bounds.size.height);
+    } completion:^(BOOL finished) {
+        buttonReset.hidden = NO;
+    }];
+}
+
+- (void) sliderMoved:(ANSlider*)sliderView;
+{
+    self.statusLabel.text = @"MOVING...";
+}
+
+- (void) sliderStillLocked:(ANSlider*)sliderView;
+{
+    self.statusLabel.text = @"LOCKED.";
 }
 
 @end

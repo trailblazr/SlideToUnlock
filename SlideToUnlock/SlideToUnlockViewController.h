@@ -9,6 +9,19 @@
 #import <UIKit/UIKit.h>
 #import "ANSlider.h"
 
-@interface SlideToUnlockViewController : UIViewController
+@interface SlideToUnlockViewController : UIViewController<ANSliderDelegate> {
+
+    IBOutlet UILabel *statusLabel;
+    IBOutlet UIButton *buttonReset;
+    ANSlider *slider;
+    CGPoint sliderOriginalCenter;
+}
+
+@property( nonatomic, retain ) UILabel *statusLabel;
+@property( nonatomic, retain ) ANSlider *slider;
+@property( nonatomic, retain ) UIButton *buttonReset;
+@property( nonatomic, assign ) CGPoint sliderOriginalCenter;
+
+- (IBAction) actionReset:(id)sender;
 
 @end

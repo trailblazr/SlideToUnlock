@@ -10,7 +10,12 @@
 #import "ANImageBitmapRep.h"
 #import "EaseOutSmoothAnimation.h"
 
+@protocol ANSliderDelegate;
+
 @interface ANSlider : UIView {
+    
+    id<ANSliderDelegate>delegate;
+    
 	// Text
 	NSString * drawText;
 	UIImage * darkImage;
@@ -33,9 +38,23 @@
 	EaseOutSmoothAnimation * easeOut;
 }
 
+@property( nonatomic, assign ) id<ANSliderDelegate>delegate;
+
 - (void)startAnimating:(id)sender;
 - (void)stopAnimating:(id)sender;
 - (void)setDrawText:(NSString *)someText;
 - (NSString *)drawText;
+- (void)reset;
+
+@end
+
+@protocol ANSliderDelegate <NSObject>
+
+- (void) sliderUnlocked:(ANSlider*)sliderView;
+
+@optional
+
+- (void) sliderMoved:(ANSlider*)sliderView;
+- (void) sliderStillLocked:(ANSlider*)sliderView;
 
 @end
